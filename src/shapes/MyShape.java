@@ -153,4 +153,26 @@ public abstract class MyShape implements Serializable, Cloneable {
 		updateBounds();
 		updateCenter();
 	}
+
+    @Override
+	public Object clone ()
+	{
+		try
+		{
+			MyShape copy = (MyShape) super.clone();
+			
+			copy.setP1(new Point2D(p1.getX(), p1.getY()));
+			copy.setP2(new Point2D(p2.getX(), p2.getY()));
+			
+			copy.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1));
+			
+			return copy;
+		}
+		
+		catch (CloneNotSupportedException e)
+		{
+			System.err.println("MyShape cloning is unsuccessful");
+			return null;
+		}
+	}
 }
