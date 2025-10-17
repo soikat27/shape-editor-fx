@@ -24,6 +24,9 @@ public abstract class MyShape implements Serializable, Cloneable {
 		p1 = point1;
 		p2 = point2;
 
+        updateBounds();
+		updateCenter();
+
 		filled = false;
 	}
 
@@ -92,11 +95,17 @@ public abstract class MyShape implements Serializable, Cloneable {
 	public void setP2 (Point2D point2)
 	{
 		p2 = point2;
+
+        updateBounds();
+		updateCenter();
 	}
 
 	public void setP2 (double x, double y)
 	{
 		p2 = new Point2D (x, y);
+
+        updateBounds();
+		updateCenter();
 	}
 
 	public void setColor (Color color)
@@ -107,5 +116,41 @@ public abstract class MyShape implements Serializable, Cloneable {
 	public void setFilled (boolean filled)
 	{
 		this.filled = filled;
+	}
+
+    @Override
+    public String toString ()
+	{
+		return String.format("%.0f %.0f %.0f %.0f %b %.3f %.3f %.3f\n", p1.getX(), p1.getY(), p2.getX(), p2.getY(), filled, color.getRed(), color.getGreen(), color.getBlue());
+	}
+
+    public void updateBounds ()
+	{
+		ulx = Math.min(p1.getX(), p2.getX());
+		uly = Math.min(p1.getY(), p2.getY());
+
+		width  = Math.abs(p2.getX() - p1.getX());
+		height = Math.abs(p2.getY() - p1.getY());
+	}
+
+	public void updateCenter ()
+	{
+		center = p1.midpoint(p2);
+	}
+
+	public double distance (double x, double y)
+	{
+		double distance = center.distance(x, y);
+
+		return distance;
+	}
+	
+	public void move (double dx, double dy)
+	{
+		p1 = p1.add(dx, dy);
+		p2 = p2.add(dx, dy);
+		
+		updateBounds();
+		updateCenter();
 	}
 }
