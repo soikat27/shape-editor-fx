@@ -1,5 +1,8 @@
 package shapes;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javafx.geometry.Point2D;
@@ -185,4 +188,52 @@ public abstract class MyShape implements Serializable, Cloneable {
 	}
 
     public abstract void draw (GraphicsContext gc);
+
+    private void writeObject (ObjectOutputStream oos) throws IOException
+	{
+		// write co-ordinates of p1, p2
+		
+		oos.writeDouble(p1.getX());
+		oos.writeDouble(p1.getY());
+		
+		oos.writeDouble(p2.getX());
+		oos.writeDouble(p2.getY());
+		
+		// performs default serialization
+		
+		oos.defaultWriteObject();
+		
+		// writes components of color
+		
+		oos.writeDouble(color.getRed());
+		oos.writeDouble(color.getGreen());
+		oos.writeDouble(color.getBlue());
+	}
+
+    private void readObject (ObjectInputStream ois) throws ClassNotFoundException, IOException
+	{
+		// read co-ordinates of p1, p2
+		
+		double x1 = ois.readDouble();
+		double y1 = ois.readDouble();
+		
+		setP1 (x1, y1);
+		
+		double x2 = ois.readDouble();
+		double y2 = ois.readDouble();
+		
+		setP2 (x2, y2);
+		
+		// performs default deserialization
+		
+		ois.defaultReadObject();
+		
+		// read each color component
+		
+		double r = ois.readDouble();
+		double g = ois.readDouble();
+		double b = ois.readDouble();
+		
+		color = Color.color(r, g, b);
+	}
 }
