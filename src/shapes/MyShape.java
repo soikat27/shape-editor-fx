@@ -31,4 +31,81 @@ public abstract class MyShape implements Serializable, Cloneable {
 	{
 		this(new Point2D (x1, y1), new Point2D (x2, y2));
 	}
+
+    // ----- GETTER & SETTER METHODS -----
+
+    public Point2D getP1 ()
+	{
+		return p1;
+	}
+
+	public Point2D getP2 ()
+	{
+		return p2;
+	}
+
+	public Color getColor ()
+	{
+		return color;
+	}
+
+	public boolean isFilled ()
+	{
+		return filled;
+	}
+
+	public double getULX ()
+	{
+		return ulx;
+	}
+
+	public double getULY ()
+	{
+		return uly;
+	}
+
+	public double getWidth ()
+	{
+		return width;
+	}
+
+	public double getHeight ()
+	{
+		return height;
+	}
+
+	public Point2D getCenter ()
+	{
+		return center;
+	}
+
+	public void setP1 (Point2D point1)
+	{
+		p1 = point1;
+	}
+
+	public void setP1 (double x, double y)
+	{
+		p1 = new Point2D (x, y);
+	}
+
+	public void setP2 (Point2D point2)
+	{
+		p2 = point2;
+	}
+
+	public void setP2 (double x, double y)
+	{
+		p2 = new Point2D (x, y);
+	}
+
+	public void setColor (Color color)
+	{
+		this.color = color;
+	}
+
+	public void setFilled (boolean filled)
+	{
+		this.filled = filled;
+	}
 }
