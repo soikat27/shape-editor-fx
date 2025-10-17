@@ -3,6 +3,7 @@ package shapes;
 import java.io.Serializable;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public abstract class MyShape implements Serializable, Cloneable {
@@ -175,4 +176,13 @@ public abstract class MyShape implements Serializable, Cloneable {
 			return null;
 		}
 	}
+
+    public void drawBounds (GraphicsContext gc)
+	{
+		gc.setLineDashes(4);
+		gc.setStroke(bBoxColor);
+		gc.strokeRect(ulx, uly, width, height);
+	}
+
+    public abstract void draw (GraphicsContext gc);
 }
