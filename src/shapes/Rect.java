@@ -21,8 +21,31 @@ public class Rect extends MyShape {
 	}
 
     @Override
+	public String toString ()
+	{
+		return String.format("Rect %s", super.toString());
+	}
+
+    @Override
 	public void draw (GraphicsContext gc)
 	{
-		
+		// drawing the bounding box
+
+		drawBounds (gc);
+
+		// drawing the shape
+        
+		if (filled) 
+		{
+			gc.setFill(color);
+			gc.fillRect(ulx, uly, width, height);
+		} 
+
+		else 
+		{
+			gc.setStroke(color);
+			gc.setLineDashes(null);
+			gc.strokeRect(ulx, uly, width, height);
+		}
 	}
 }
