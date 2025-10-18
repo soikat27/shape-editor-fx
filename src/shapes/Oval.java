@@ -21,8 +21,31 @@ public class Oval extends MyShape {
 	}
 
     @Override
+	public String toString ()
+	{
+		return String.format("Oval %s", super.toString());
+	}
+
+    @Override
 	public void draw (GraphicsContext gc)
 	{
+        // drawing the bounding box
 
+		drawBounds (gc);
+
+		// drawing the shape
+
+		if (filled) 
+		{
+			gc.setFill(color);
+			gc.fillOval(ulx, uly, width, height);
+		} 
+
+		else 
+		{
+			gc.setStroke(color);
+			gc.setLineDashes(null);
+			gc.strokeOval(ulx, uly, width, height);
+		}
 	}
 }
