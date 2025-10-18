@@ -21,8 +21,28 @@ public class Line extends MyShape{
 	}
 
     @Override
+	public String toString ()
+	{
+		return String.format("Line %s", super.toString());
+	}
+
+    @Override
 	public void draw (GraphicsContext gc)
 	{	
+		// drawing the bounding box
 
+		drawBounds (gc);
+
+		// drawing the shape
+
+		double startX = p1.getX();
+		double startY = p1.getY();
+
+		double endX   = p2.getX();
+		double endY   = p2.getY();
+		
+		gc.setLineDashes(null);
+		gc.setStroke(color);
+		gc.strokeLine(startX, startY, endX, endY);
 	}
 }
