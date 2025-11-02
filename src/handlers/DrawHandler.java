@@ -1,6 +1,7 @@
 package handlers;
 
 import javafx.geometry.Point2D;
+import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
 
 public class DrawHandler {
@@ -49,6 +50,28 @@ public class DrawHandler {
 			canvas.setCurrShape(null);
 
 			shape = null;
+		}
+	}
+
+    @Override
+	public void handle (MouseEvent event)
+	{
+		String eventName = event.getEventType().getName();
+		System.out.println ("event name: " + eventName);
+
+		switch (eventName)
+		{
+		case "MOUSE_PRESSED":
+			mousePressed(event);
+			break;
+		case "MOUSE_DRAGGED":
+			mouseDragged(event);
+			break;
+		case "MOUSE_RELEASED":
+			mouseReleased(event);
+			break;
+		default:
+			break;
 		}
 	}
 }
