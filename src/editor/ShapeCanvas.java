@@ -1,7 +1,12 @@
 package editor;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -179,6 +184,67 @@ public class ShapeCanvas extends Canvas {
 		catch (FileNotFoundException e)
 		{
 			System.out.println (fileObj + "couldn't be loaded for reading");
+			e.printStackTrace();
+		}
+	}
+
+	public void toBinaryFile (File fileObj)
+	{
+		try
+		{
+			FileOutputStream fOut = new FileOutputStream (fileObj);
+			ObjectOutputStream writer = new ObjectOutputStream (fOut);
+			
+			writer.writeInt(shapes.size());
+			
+			for (MyShape shape : shapes)
+			{
+				writer.writeObject(shape);
+			}
+			
+			writer.close();
+			fOut.close();
+		}
+		
+		catch (IOException e)
+		{
+			System.out.println(fileObj + "couldn't be opened/created for writing");
+			e.printStackTrace();
+		}
+	}
+
+	public void fromBinaryFile (File fileObj)
+	{
+		try
+		{
+			FileInputStream fIn = new FileInputStream (fileObj);
+			ObjectInputStream reader = new ObjectInputStream (fIn);
+			
+			clear();
+			int nShapes = reader.readInt();
+			
+			for (int i = 0; i < nShapes; i++)
+			{
+				MyShape s = (MyShape) reader.readObject();
+				
+				shapes.add(s);
+			}
+			
+			fIn.close();
+			reader.close();
+			
+			paint();
+		}
+		
+		catch (IOException e)
+		{
+			System.out.println(fileObj + "couldn't be loaded for reading");
+			e.printStackTrace();
+		}
+		
+		catch (ClassNotFoundException e)
+		{
+			System.out.println(fileObj + "couldn't be loaded for reading");
 			e.printStackTrace();
 		}
 	}
