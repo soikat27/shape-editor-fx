@@ -1,5 +1,6 @@
 package handlers;
 
+import editor.ShapeCanvas;
 import javafx.scene.input.MouseEvent;
 import shapes.Oval;
 

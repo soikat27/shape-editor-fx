@@ -1,5 +1,7 @@
 package handlers;
 
+import editor.ShapeCanvas;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
@@ -26,7 +28,7 @@ import shapes.MyShape;
  * @see ShapeCanvas
  * @see javafx.scene.input.MouseEvent
  */
-public class DrawHandler {
+public class DrawHandler implements EventHandler<MouseEvent> {
     
     /** The shape currently being drawn. */
     protected MyShape     shape;
