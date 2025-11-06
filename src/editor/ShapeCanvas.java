@@ -32,4 +32,30 @@ public class ShapeCanvas extends Canvas {
 		width  = w;
 		height = h;
 	}
+
+    // ----- GETTER & SETTER METHODS -----
+    public MyShape getCurrShape ()
+	{
+		return currShape;
+	}
+
+    public Color getCurrColor ()
+	{
+		return currColor;
+	}
+
+    public boolean getCurrFilled ()
+	{
+		return filled;
+	}
+
+    public void setCurrColor (Color c)
+	{
+		currColor = c;
+	}
+
+    public void setCurrFilled (boolean filled)
+	{
+		this.filled = filled;
+	}
 }
