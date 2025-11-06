@@ -97,6 +97,17 @@ public class ShapeEditor extends Application {
 			canvas.setCurrFilled(cbFilled.isSelected());
 		});
 
+		// Add colorPicker
+		colorPicker = new ColorPicker (canvas.getCurrColor());
+		colorPicker.setOnAction(new EventHandler<ActionEvent> () {
+
+			@Override
+			public void handle (ActionEvent e)
+			{
+				canvas.setCurrColor(colorPicker.getValue());
+			}
+		});
+
 		// Add clear button
 		bnClear = new Button ("Clear");
 		bnClear.setOnAction(e -> {
