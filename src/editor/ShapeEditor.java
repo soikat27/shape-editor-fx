@@ -31,7 +31,27 @@ public class ShapeEditor extends Application {
 
     public void start (Stage mainStage)
 	{
-		
+		mainPane = new BorderPane ();
+		setupCanvas ();
+		setupControls ();
+
+		Scene scene = new Scene (mainPane, APP_WIDTH, APP_HEIGHT);
+
+		mainStage.setScene(scene);
+		mainStage.setTitle("Shape Editor");
+
+		mainStage.show();
+	}
+
+    public void setupControls ()
+    {
+        
+    }
+
+    public void setupCanvas ()
+	{
+		canvas = new ShapeCanvas (CANVAS_WIDTH, CANVAS_HEIGHT);
+		mainPane.setCenter(canvas);
 	}
 
     public static void main (String[] args)
