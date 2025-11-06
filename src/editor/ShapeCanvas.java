@@ -58,4 +58,53 @@ public class ShapeCanvas extends Canvas {
 	{
 		this.filled = filled;
 	}
+
+    // ----- OTHER BEHAVIORAL METHODS -----
+    public void paint ()
+	{
+		// clear canvas
+		gc.clearRect(0, 0, width, height);
+
+		// draw all strokes
+		for (MyShape shape : shapes)
+		{
+			shape.draw(gc);
+		}
+
+		// draw current shape if exits
+		if (currShape != null)
+		{
+			currShape.draw(gc);
+		}
+	}
+
+    public void addShape (MyShape s)
+	{
+		shapes.add(s);
+		paint();
+	}
+
+    public void setCurrShape (MyShape s)
+	{
+		currShape = s;
+
+		if (currShape != null)
+		{
+			currShape.setColor(currColor);
+			currShape.setFilled(filled);
+		}
+	}
+
+    public void clear ()
+	{
+		shapes.clear();
+		paint();
+	}
+
+    public void replaceMouseHandler(EventHandler<MouseEvent> listener) 
+	{
+		setOnMousePressed(listener);
+		setOnMouseDragged(listener);
+		setOnMouseReleased(listener);
+	}
 }
