@@ -117,6 +117,31 @@ public class ShapeCanvas extends Canvas {
 		setOnMouseReleased(listener);
 	}
 
+	public MyShape closestShape (double x, double y)
+	{
+		if (shapes.isEmpty())
+		{
+			return null;
+		}
+
+		MyShape closestShape   = shapes.get(0);
+		double closestDistance = closestShape.getCenter().distance(x, y);
+
+		for (int i = 1; i < shapes.size(); i++)
+		{
+			MyShape currShape   = shapes.get(i);
+			double currDistance = currShape.getCenter().distance(x, y);
+
+			if (currDistance < closestDistance)
+			{
+				closestDistance = currDistance;
+				closestShape = currShape;
+			}
+		}
+
+		return closestShape;
+	}
+
 	public void toTextFile (File fileObj)
 	{
 		try
