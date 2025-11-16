@@ -142,6 +142,11 @@ public class ShapeCanvas extends Canvas {
 		return closestShape;
 	}
 
+	public void deleteShape (MyShape s)
+	{
+		shapes.remove(s);
+	}
+
 	public void toTextFile (File fileObj)
 	{
 		try
