@@ -152,12 +152,80 @@ public class ShapeCanvas extends Canvas {
 		shapes.remove(s);
 	}
 
+	private MyShape loadSingletonText (Scanner reader, String shapeType)
+	{
+		double x1 = reader.nextDouble();
+		double y1 = reader.nextDouble();
+		double x2 = reader.nextDouble();
+		double y2 = reader.nextDouble();
+		String isFilled = reader.next();
+		double r = reader.nextDouble();
+		double g = reader.nextDouble();
+		double b = reader.nextDouble();
+
+		MyShape shape;
+		if (shapeType.equalsIgnoreCase("Line"))
+		{
+			shape = new Line (x1, y1, x2, y2);
+
+		}
+		else if (shapeType.equalsIgnoreCase("Rect"))
+		{
+			shape = new Rect (x1, y1, x2, y2);
+		}
+		else
+		{
+			shape = new Oval (x1, y1, x2, y2);
+		}
+
+		if (isFilled.equalsIgnoreCase("true"))
+		{
+			shape.setFilled(true);
+		}
+
+		shape.setColor(Color.color(r, g, b));
+		return shape;
+	}
+
+	private MyShape loadGroupText (Scanner reader)
+	{
+		int nShapes = reader.nextInt();
+		double x1 = reader.nextDouble();
+		double y1 = reader.nextDouble();
+		double x2 = reader.nextDouble();
+		double y2 = reader.nextDouble();
+
+		ShapeGroup shapeGroup = new ShapeGroup ();
+
+		shapeGroup.setP1(x1, y1);
+		shapeGroup.setP2(x2, y2);
+
+		for (int i = 0; i < nShapes; i++)
+		{
+			String curShapeType = reader.next();
+			MyShape curshape;
+
+			if (curShapeType.equalsIgnoreCase("ShapeGroup"))
+			{
+				curshape = loadGroupText (reader);
+			}
+
+			else
+			{
+				curshape = loadSingletonText (reader, curShapeType);
+			}
+
+			shapeGroup.addMember(curshape);
+		}
+
+		return shapeGroup;
+	}
+
 	public void toTextFile (File fileObj)
 	{
 		try
 		{	
 			PrintWriter writer = new PrintWriter (fileObj);
-			
 			writer.println(shapes.size());
 			
 			for (MyShape shape : shapes)
@@ -182,34 +250,26 @@ public class ShapeCanvas extends Canvas {
 			Scanner reader = new Scanner (fileObj);
 			clear();
 			
-			int nShapes = reader.nextInt();
-			
-			for (int i = 0; i < nShapes; i++)
+			if (reader.hasNext())
 			{
-				String type = reader.next();
+				int nShapes = reader.nextInt();
+				for (int i = 0; i < nShapes; i++)
+				{
+					String curType = reader.next();
+					MyShape curShape;
 
-				double x1 = reader.nextDouble();
-				double y1 = reader.nextDouble();
-				double x2 = reader.nextDouble();
-				double y2 = reader.nextDouble();
-				
-				String isFilled = reader.next();
-				
-				double r = reader.nextDouble();
-				double g = reader.nextDouble();
-				double b = reader.nextDouble();
-				
-				MyShape shape;
-				
-				if (type.equalsIgnoreCase("Line")) 			shape = new Line (x1, y1, x2, y2);
-				else if (type.equalsIgnoreCase("Rectangle")) shape = new Rect (x1, y1, x2, y2);
-				else 													    shape = new Oval (x1, y1, x2, y2);
-				
-				if (isFilled.equalsIgnoreCase("true")) shape.setFilled(true);
-				
-				shape.setColor(Color.color(r, g, b));
+					if (curType.equalsIgnoreCase("ShapeGroup"))
+					{
+						curShape = loadGroupText (reader);
+					}
 
-				shapes.add(shape);
+					else
+					{
+						curShape = loadSingletonText (reader, curType);
+					}
+
+					shapes.add(curShape);
+				}
 			}
 			
 			reader.close();
@@ -231,7 +291,6 @@ public class ShapeCanvas extends Canvas {
 			ObjectOutputStream writer = new ObjectOutputStream (fOut);
 			
 			writer.writeInt(shapes.size());
-			
 			for (MyShape shape : shapes)
 			{
 				writer.writeObject(shape);
@@ -261,13 +320,11 @@ public class ShapeCanvas extends Canvas {
 			for (int i = 0; i < nShapes; i++)
 			{
 				MyShape s = (MyShape) reader.readObject();
-				
 				shapes.add(s);
 			}
 			
 			fIn.close();
 			reader.close();
-			
 			paint();
 		}
 		
