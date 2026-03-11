@@ -23,8 +23,68 @@ public class ShapeGroup extends MyShape {
 	}
 
     // ----- METHODS -----
+    public void setGroup (ArrayList<MyShape> group)
+	{
+		this.group = group;
+	}
+
+    public boolean isEmpty ()
+	{
+		if (group != null)
+			return group.isEmpty();
+
+		return true;
+	}
+
+    public int size ()
+	{
+		return group.size();
+	}
+
+    public void addMember (MyShape shape)
+	{
+		if (!group.contains(shape))
+		{
+			group.add(shape);
+            updateBounds();
+            updateCenter ();
+		}
+	}
+
+    public void removeMember (MyShape shape)
+	{
+		if (group.contains(shape))
+		{
+			group.remove(shape);
+            updateBounds();
+            updateCenter ();
+		}
+	}
+
+    public boolean within (MyShape shape)
+	{
+		return ( (shape.getCenter().getX() >= ulx && shape.getCenter().getX() <= (ulx + width) ) && (shape.getCenter().getY() >= uly && shape.getCenter().getY() <= (uly + height) ) );
+	}
+
     @Override
     public void draw(GraphicsContext gc) {
         // TODO Auto-generated method stub
     }
+
+    @Override
+	public Object clone()
+	{
+		ShapeGroup copy = (ShapeGroup) super.clone();
+		
+		ArrayList<MyShape> copyArray = new ArrayList<> ();
+		
+		for (MyShape shape : group)
+		{
+			copyArray.add((MyShape)shape.clone());
+		}
+		
+		copy.setGroup (copyArray);
+		
+		return copy;
+	}
 }
