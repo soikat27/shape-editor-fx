@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class ShapeGroup extends MyShape {
     
@@ -67,8 +68,47 @@ public class ShapeGroup extends MyShape {
 	}
 
     @Override
-    public void draw(GraphicsContext gc) {
-        // TODO Auto-generated method stub
+    public void updateCenter ()
+	{
+		double totalX = 0;
+		double totalY = 0;
+
+		for (int i = 0; i < group.size(); i++)
+		{
+			totalX += group.get(i).getCenter().getX();
+			totalY += group.get(i).getCenter().getY();
+		}
+
+		double avgX = totalX/group.size();
+		double avgY = totalY/group.size();
+
+		center = new Point2D (avgX, avgY);
+	}
+
+    @Override
+	public void move (double dx, double dy)
+	{
+		for (MyShape shape : group)
+		{
+			shape.move(dx, dy);
+		}
+		
+		super.move(dx, dy);
+	}
+
+    @Override
+    public void draw(GraphicsContext gc) 
+    {
+        // drawing the bounding box
+		gc.setLineDashes(4);
+		gc.setStroke(Color.LIGHTGREY);
+		gc.strokeRect(ulx, uly, width, height);
+
+		// drawing the shape
+		for (MyShape shape : group)
+		{
+			shape.draw(gc);
+		}
     }
 
     @Override
@@ -86,5 +126,21 @@ public class ShapeGroup extends MyShape {
 		copy.setGroup (copyArray);
 		
 		return copy;
+	}
+
+    @Override
+    public String toString ()
+	{
+		String fName = String.format("ShapeGroup %d %.0f %.0f %.0f %.0f\n", size(), p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		
+		if (group != null)
+		{
+			for (MyShape shape : group)
+			{
+				fName += shape.toString();
+			}
+		}
+		
+		return fName;
 	}
 }
