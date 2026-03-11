@@ -43,6 +43,11 @@ public class ShapeCanvas extends Canvas {
 	}
 
     // ----- GETTER & SETTER METHODS -----
+	public ArrayList<MyShape> getShapes ()
+	{
+		return shapes;
+	}
+	
     public MyShape getCurrShape ()
 	{
 		return currShape;
