@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
  */
 public abstract class MyShape implements Serializable, Cloneable {
     
+	// ----- FIELDS -----
     /** Default bounding box color used when drawing selection outlines. */
     protected static final Color bBoxColor = Color.BLACK;
 
@@ -37,7 +38,6 @@ public abstract class MyShape implements Serializable, Cloneable {
 	protected double  ulx, uly, width, height;
 
     // ----- CONSTRUCTORS -----
-
     /**
      * Default no-argument constructor.
      * Initializes a shape without defined points.

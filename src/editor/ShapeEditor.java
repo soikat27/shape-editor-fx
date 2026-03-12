@@ -2,7 +2,6 @@ package editor;
 
 import java.io.File;
 
-import edits.*;
 import handlers.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;

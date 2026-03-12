@@ -1,4 +1,4 @@
-package edits;
+package handlers;
 
 import editor.ShapeCanvas;
 import javafx.event.EventHandler;
