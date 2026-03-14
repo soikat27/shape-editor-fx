@@ -1,15 +1,20 @@
 package handlers;
 
 import editor.ShapeCanvas;
+import edits.DeleteEdit;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
 
 /**
- * EventHandler implementation for handling mouse events to delete shapes from a canvas.
- * 
- * When the user clicks on the canvas, the shape closest to the click location
- * is removed from the canvas.
+ Event handler responsible for deleting shapes from a {@link ShapeCanvas}.
+ *
+ * <p>When the user clicks on the canvas, the shape closest to the click
+ * location is identified and removed from the canvas. The deletion is
+ * recorded as a {@link DeleteEdit} so that the action can be undone
+ * or redone through the application's undo/redo system.</p>
+ *
+ * @author Soikat
  */
 public class DeleteHandler implements EventHandler<MouseEvent> {
     
@@ -31,7 +36,7 @@ public class DeleteHandler implements EventHandler<MouseEvent> {
     // ----- LOGICAL METHODS -----
 
     /**
-     * Handles mouse click events to delete the shape closest to the click location.
+     * Handles mouse click events to delete the shape closest to the click location and record the deletion in undo stack of the canvas.
      *
      * @param e The MouseEvent representing the mouse click
      */
@@ -49,6 +54,7 @@ public class DeleteHandler implements EventHandler<MouseEvent> {
 			
 			if (closestShape != null)
 			{
+				canvas.addEdit(new DeleteEdit (canvas, closestShape));
 				canvas.deleteShape(closestShape);
 				canvas.paint();
 			}

@@ -10,7 +10,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Stack;
 
+import edits.Edit;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -24,9 +26,11 @@ public class ShapeCanvas extends Canvas {
 	private GraphicsContext    gc;
 	private ArrayList<MyShape> shapes;
 	private MyShape            currShape;
-
 	private Color              currColor;
 	private boolean            filled;
+
+	private Stack<Edit> stackUndo;
+	private Stack<Edit> stackRedo;
 
     // ----- CONSTRUCTORS -----
     public ShapeCanvas (double w, double h)
@@ -37,9 +41,11 @@ public class ShapeCanvas extends Canvas {
 		shapes = new ArrayList<> ();
 		currColor = Color.BLACK;
 		filled = false;
-
 		width  = w;
 		height = h;
+
+		stackUndo = new Stack<> ();
+		stackRedo = new Stack<> ();
 	}
 
     // ----- GETTER & SETTER METHODS -----
@@ -112,6 +118,8 @@ public class ShapeCanvas extends Canvas {
     public void clear ()
 	{
 		shapes.clear();
+		stackUndo.clear();
+		stackRedo.clear();
 		paint();
 	}
 
@@ -150,6 +158,31 @@ public class ShapeCanvas extends Canvas {
 	public void deleteShape (MyShape s)
 	{
 		shapes.remove(s);
+	}
+
+	public void addEdit (Edit edit)
+	{
+		stackUndo.push(edit);
+	}
+
+	public void undo ()
+	{
+		if (!stackUndo.empty())
+		{
+			Edit latest = stackUndo.pop();
+			latest.undo();
+			stackRedo.push(latest);
+		}
+	}
+
+	public void redo ()
+	{
+		if (!stackRedo.empty())
+		{
+			Edit latest = stackRedo.pop();
+			latest.redo();			
+			stackUndo.push(latest);
+		}
 	}
 
 	private MyShape loadSingletonText (Scanner reader, String shapeType)
