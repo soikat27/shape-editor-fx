@@ -47,7 +47,6 @@ public class LineHandler extends DrawHandler{
 	public void mousePressed (MouseEvent e)
 	{
 		shape = new Line ();
-
 		super.mousePressed (e);
 	}
 }

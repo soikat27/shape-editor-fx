@@ -47,7 +47,6 @@ public class RectHandler extends DrawHandler {
 	public void mousePressed (MouseEvent e)
 	{
 		shape = new Rect ();
-
 		super.mousePressed (e);
 	}
 }

@@ -59,11 +59,7 @@ public class DrawHandler implements EventHandler<MouseEvent> {
 	{
 		if (shape != null)
 		{	
-			double mx = e.getX();
-			double my = e.getY();
-
-			shape.setP1(new Point2D (mx, my));
-
+			shape.setP1(new Point2D (e.getX(), e.getY()));
 			canvas.setCurrShape(shape);
 		}
 	}
@@ -79,11 +75,7 @@ public class DrawHandler implements EventHandler<MouseEvent> {
 	{
 		if (shape != null)
 		{
-			double mx = e.getX();
-			double my = e.getY();
-
-			shape.setP2(mx, my);
-
+			shape.setP2(e.getX(), e.getY());
 			canvas.paint();
 		}
 	}

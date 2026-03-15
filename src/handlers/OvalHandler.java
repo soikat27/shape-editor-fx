@@ -47,7 +47,6 @@ public class OvalHandler extends DrawHandler {
 	public void mousePressed (MouseEvent e)
 	{
 		shape = new Oval ();
-		
 		super.mousePressed (e);
 	}
 }

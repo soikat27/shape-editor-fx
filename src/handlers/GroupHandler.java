@@ -59,11 +59,8 @@ public class GroupHandler implements EventHandler<MouseEvent> {
     protected void mousePressed (MouseEvent e)
 	{
 		group = new ShapeGroup ();
-		
-		double mx = e.getX();
-		double my = e.getY();
-		
-		group.setP1(mx, my);
+		group.setP1(e.getX(), e.getY());
+
 		canvas.setCurrShape(group);
 	}
 
@@ -76,10 +73,7 @@ public class GroupHandler implements EventHandler<MouseEvent> {
      */
     protected void mouseDragged (MouseEvent e)
 	{
-		double mx = e.getX();
-		double my = e.getY();
-
-		group.setP2(mx, my);
+		group.setP2(e.getX(), e.getY());
 		canvas.paint();
 	}
     /**
