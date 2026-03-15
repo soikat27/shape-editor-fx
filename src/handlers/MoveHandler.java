@@ -1,26 +1,31 @@
 package handlers;
 
 import editor.ShapeCanvas;
+import edits.MoveEdit;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
 
 /**
- * EventHandler implementation for handling mouse events to move shapes on the canvas.
+ * {@code MoveHandler} is a JavaFX {@link EventHandler} implementation that enables
+ * interactive movement of shapes on a {@link ShapeCanvas}.
  *
- * <p>This handler allows the user to click on the closest shape and drag it to a new position.
- * The canvas is updated after every movement.</p>
+ * <p>
+ * When attached to a canvas, this handler allows a user to click on the closest shape
+ * to the mouse cursor, drag it across the canvas, and release it. Each movement is
+ * captured as a {@link MoveEdit}, enabling undo/redo functionality.
+ * </p>
  */
 public class MoveHandler implements EventHandler<MouseEvent> {
     
 	/** The canvas containing the shapes to move */
     private ShapeCanvas canvas;
 	/** The currently selected shape closest to the mouse */
-	private MyShape     closestShape;
-	/** Previous mouse X and Y coordinates */
-	private double x0, y0;
-	/** Current mouse X and Y coordinates */
-	private double x1, y1;
+	private MyShape     selectedShape;
+	/** Initial mouse press coordinates */
+	private double startX, startY;
+	/** Initial mouse press coordinates */
+	private double lastX, lastY;
 
     // ----- CONSTRUCTORS -----
 
@@ -43,15 +48,14 @@ public class MoveHandler implements EventHandler<MouseEvent> {
      */
     private void mousePressed (MouseEvent e)
 	{
-		double mx = e.getX();
-		double my = e.getY();
-			
-		closestShape = canvas.closestShape(mx, my);
+		double x = e.getX();
+		double y = e.getY();
+		selectedShape = canvas.closestShape(x, y);
 
-		if (closestShape != null)
+		if (selectedShape != null)
 		{
-			x0 = mx;
-			y0 = my;
+			lastX = startX = x;
+			lastY = startY = y;
 		}
 	}
 
@@ -61,26 +65,38 @@ public class MoveHandler implements EventHandler<MouseEvent> {
      * @param e The MouseEvent representing the drag
      */
     private void mouseDragged (MouseEvent e)
-	{
-		x1 = e.getX();
-		y1 = e.getY();
-			
-		if (closestShape != null)
+	{			
+		if (selectedShape != null)
 		{
-			double dx = x1 - x0;
-			double dy = y1 - y0;
+			double dx = e.getX() - lastX;
+			double dy = e.getY() - lastY;
 				
-			closestShape.move(dx, dy);
+			selectedShape.move(dx, dy);
 			canvas.paint();
+
+			lastX = e.getX();
+			lastY = e.getY();
 		}
-			
-		x0 = x1;
-		y0 = y1;
+	}
+
+	/**
+     * Handles mouse release events to record the full movement as a {@link MoveEdit}.
+     *
+     * @param e The representing the release
+     */
+	private void mouseReleased (MouseEvent e)
+	{
+		if (selectedShape != null)
+		{
+			double totalX = lastX - startX;
+            double totalY = lastY - startY;
+			canvas.addEdit(new MoveEdit(canvas, selectedShape, totalX, totalY));
+		}
 	}
 
 	/**
      * Handles mouse events by delegating to the appropriate method
-     * based on event type (press or drag).
+     * based on event type (press or drag or Release).
      *
      * @param e The MouseEvent to handle
      */
@@ -91,14 +107,17 @@ public class MoveHandler implements EventHandler<MouseEvent> {
 		
 		switch (eventName)
 		{
-		case "MOUSE_PRESSED":
-			mousePressed(e);
-			break;
-		case "MOUSE_DRAGGED":
-			mouseDragged(e);
-			break;
-		default:
-			break;
+			case "MOUSE_PRESSED":
+				mousePressed(e);
+				break;
+			case "MOUSE_DRAGGED":
+				mouseDragged(e);
+				break;
+			case "MOUSE_RELEASED":
+				mouseReleased(e);
+            	break;
+			default:
+				break;
 		}
 	}
 }
