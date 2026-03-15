@@ -1,33 +1,35 @@
 package handlers;
 
 import editor.ShapeCanvas;
+import edits.CopyEdit;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
 
 /**
  * EventHandler implementation for copying shapes on a ShapeCanvas.
+ * 
  * <p>
- * When the user clicks on the canvas with "copy" radio button on, this handler identifies the shape 
- * closest to the mouse cursor, creates a clone of it, and allows the user 
- * to drag the cloned shape to a new position.
+ * Clicking on a shape creates a copy, which can be dragged to a new location.
+ * The operation is added to the canvas's undo/redo system via {@link CopyEdit}. This class ensures that each copied shape can be manipulated independently
+ * while preserving the original shape.
  * </p>
+ * 
+ * @author Soikat
  */
 public class CopyHandler implements EventHandler<MouseEvent> {
     
+	// ----- FIELDS -----
     /** The canvas on which shapes are drawn. */
     private ShapeCanvas canvas;
-    /** The shape closest to the mouse press location. */
-	private MyShape     closestShape;
-    /** The cloned copy of the shape being dragged. */
-	private MyShape     copyShape;
-    /** Previous mouse X and Y coordinates during dragging. */
-	private double x0, y0;
-    /** Current mouse X and Y coordinates during dragging. */
-    private double x1, y1;
+    /** The selected shape - closest to the mouse press location. */
+	private MyShape     selectedShape;
+    /** The cloned copy of the shape being selected. */
+	private MyShape     copiedShape;
+    /** Mouse coordinates: last recorded position */
+	private double lastX, lastY;
 	
     // ----- CONSTRUCTORS -----
-
     /**
      * Constructs a CopyHandler associated with the specified ShapeCanvas.
      *
@@ -39,7 +41,6 @@ public class CopyHandler implements EventHandler<MouseEvent> {
 	}
 
     // ----- LOGICAL METHODS -----
-
     /**
      * Handles the mouse pressed event.
      * <p>
@@ -51,18 +52,17 @@ public class CopyHandler implements EventHandler<MouseEvent> {
      */
     private void mousePressed (MouseEvent e)
 	{
-		double mx = e.getX();
-		double my = e.getY();
-			
-		closestShape = canvas.closestShape(mx, my);
+		double x = e.getX();
+        double y = e.getY();	
+		selectedShape = canvas.closestShape(x, y);
 
-		if (closestShape != null)
+		if (selectedShape != null)
 		{
-			copyShape = (MyShape) closestShape.clone();
-			canvas.addShape(copyShape);
+			copiedShape = (MyShape) selectedShape.clone();
+			canvas.addShape(copiedShape);
 				
-			x0 = mx;
-			y0 = my;
+			lastX = x;
+            lastY = y;
 		}
 	}
 
@@ -77,25 +77,32 @@ public class CopyHandler implements EventHandler<MouseEvent> {
      */
     private void mouseDragged (MouseEvent e)
 	{
-		x1 = e.getX();
-		y1 = e.getY();
-			
-		if (copyShape != null)
+		if (copiedShape != null)
 		{
-			double dx = x1 - x0;
-			double dy = y1 - y0;
+			double dx = e.getX() - lastX;
+			double dy = e.getY() - lastY;
 				
-			copyShape.move(dx, dy);
+			copiedShape.move(dx, dy);
 			canvas.paint();
+
+			lastX = e.getX();
+			lastY = e.getY();
 		}
-			
-		x0 = x1;
-		y0 = y1;
+	}
+	/**
+	 * Handles mouse release to register the copy operation in undo/redo system.
+	 * 
+	 * @param e the MouseEvent representing the mouse release
+	 * */
+	private void mouseReleased (MouseEvent e)
+	{
+		if (copiedShape != null)
+			canvas.addEdit(new CopyEdit (canvas, copiedShape));
 	}
 
     /**
-     * Handles the mouse event by delegating to {@link #mousePressed} or
-     * {@link #mouseDragged} based on the type of mouse event.
+     * Handles the mouse event by delegating to {@link #mousePressed},
+     * {@link #mouseDragged} or {@link #mouseReleased} based on the type of mouse event.
      *
      * @param e the MouseEvent to handle
      */
@@ -106,14 +113,17 @@ public class CopyHandler implements EventHandler<MouseEvent> {
 		
 		switch (eventName)
 		{
-		case "MOUSE_PRESSED":
-			mousePressed(e);
-			break;
-		case "MOUSE_DRAGGED":
-			mouseDragged(e);
-			break;
-		default:
-			break;
+			case "MOUSE_PRESSED":
+				mousePressed(e);
+				break;
+			case "MOUSE_DRAGGED":
+				mouseDragged(e);
+				break;
+			case "MOUSE_RELEASED":
+				mouseReleased(e);
+            	break;
+			default:
+				break;
 		}
 	}
 }
