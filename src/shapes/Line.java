@@ -22,7 +22,7 @@ import javafx.scene.canvas.GraphicsContext;
  * 
  * @author Soikat Saha
  */
-public class Line extends MyShape{
+public class Line extends MyShape {
     
     /**
      * Default constructor. Creates a line with undefined endpoints.
@@ -80,14 +80,11 @@ public class Line extends MyShape{
 	public void draw (GraphicsContext gc)
 	{	
 		// drawing the bounding box
-
 		drawBounds (gc);
 
 		// drawing the shape
-
 		double startX = p1.getX();
 		double startY = p1.getY();
-
 		double endX   = p2.getX();
 		double endY   = p2.getY();
 		

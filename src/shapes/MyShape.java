@@ -211,7 +211,6 @@ public abstract class MyShape implements Serializable, Cloneable {
 	public double distance (double x, double y)
 	{
 		double distance = center.distance(x, y);
-
 		return distance;
 	}
 	
@@ -242,9 +241,8 @@ public abstract class MyShape implements Serializable, Cloneable {
 			
 			copy.setP1(new Point2D(p1.getX(), p1.getY()));
 			copy.setP2(new Point2D(p2.getX(), p2.getY()));
-			
 			copy.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1));
-			
+
 			return copy;
 		}
 		
@@ -281,19 +279,15 @@ public abstract class MyShape implements Serializable, Cloneable {
     private void writeObject (ObjectOutputStream oos) throws IOException
 	{
 		// write co-ordinates of p1, p2
-		
 		oos.writeDouble(p1.getX());
 		oos.writeDouble(p1.getY());
-		
 		oos.writeDouble(p2.getX());
 		oos.writeDouble(p2.getY());
 		
 		// performs default serialization
-		
 		oos.defaultWriteObject();
 		
 		// writes components of color
-		
 		oos.writeDouble(color.getRed());
 		oos.writeDouble(color.getGreen());
 		oos.writeDouble(color.getBlue());
@@ -308,23 +302,18 @@ public abstract class MyShape implements Serializable, Cloneable {
     private void readObject (ObjectInputStream ois) throws ClassNotFoundException, IOException
 	{
 		// read co-ordinates of p1, p2
-		
 		double x1 = ois.readDouble();
 		double y1 = ois.readDouble();
-		
 		setP1 (x1, y1);
 		
 		double x2 = ois.readDouble();
 		double y2 = ois.readDouble();
-		
 		setP2 (x2, y2);
 		
 		// performs default deserialization
-		
 		ois.defaultReadObject();
 		
 		// read each color component
-		
 		double r = ois.readDouble();
 		double g = ois.readDouble();
 		double b = ois.readDouble();

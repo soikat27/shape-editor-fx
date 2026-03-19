@@ -83,11 +83,9 @@ public class Oval extends MyShape {
 	public void draw (GraphicsContext gc)
 	{
         // drawing the bounding box
-
 		drawBounds (gc);
 
 		// drawing the shape
-
 		if (filled) 
 		{
 			gc.setFill(color);

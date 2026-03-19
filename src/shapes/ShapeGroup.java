@@ -35,7 +35,6 @@ public class ShapeGroup extends MyShape {
     public ShapeGroup ()
 	{
 		group = new ArrayList<MyShape> ();
-		
 		p1 = new Point2D (0, 0);
 		p2 = new Point2D (0, 0);
 		
@@ -127,7 +126,10 @@ public class ShapeGroup extends MyShape {
      */
     public boolean within (MyShape shape)
 	{
-		return ( (shape.getCenter().getX() >= ulx && shape.getCenter().getX() <= (ulx + width) ) && (shape.getCenter().getY() >= uly && shape.getCenter().getY() <= (uly + height) ) );
+		return ((shape.getCenter().getX() >= ulx && 
+                shape.getCenter().getX() <= (ulx + width)) && 
+                (shape.getCenter().getY() >= uly && 
+                shape.getCenter().getY() <= (uly + height)));
 	}
 
     /**
@@ -147,7 +149,6 @@ public class ShapeGroup extends MyShape {
 
 		double avgX = totalX/group.size();
 		double avgY = totalY/group.size();
-
 		center = new Point2D (avgX, avgY);
 	}
 
@@ -161,9 +162,7 @@ public class ShapeGroup extends MyShape {
 	public void move (double dx, double dy)
 	{
 		for (MyShape shape : group)
-		{
 			shape.move(dx, dy);
-		}
 		
 		super.move(dx, dy);
 	}
@@ -183,9 +182,7 @@ public class ShapeGroup extends MyShape {
 
 		// drawing the shape
 		for (MyShape shape : group)
-		{
 			shape.draw(gc);
-		}
     }
 
     /**
@@ -198,16 +195,12 @@ public class ShapeGroup extends MyShape {
 	public Object clone()
 	{
 		ShapeGroup copy = (ShapeGroup) super.clone();
-		
 		ArrayList<MyShape> copyArray = new ArrayList<> ();
 		
 		for (MyShape shape : group)
-		{
 			copyArray.add((MyShape)shape.clone());
-		}
 		
 		copy.setGroup (copyArray);
-		
 		return copy;
 	}
 
@@ -220,16 +213,12 @@ public class ShapeGroup extends MyShape {
     @Override
     public String toString ()
 	{
-		String fName = String.format("ShapeGroup %d %.0f %.0f %.0f %.0f\n", size(), p1.getX(), p1.getY(), p2.getX(), p2.getY());
+		String name = String.format("ShapeGroup %d %.0f %.0f %.0f %.0f\n", size(), p1.getX(), p1.getY(), p2.getX(), p2.getY());
 		
 		if (group != null)
-		{
 			for (MyShape shape : group)
-			{
-				fName += shape.toString();
-			}
-		}
+				name += shape.toString();
 		
-		return fName;
+		return name;
 	}
 }
