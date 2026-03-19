@@ -40,7 +40,7 @@ public class CopyHandler implements EventHandler<MouseEvent> {
 		canvas = sc;
 	}
 
-    // ----- LOGICAL METHODS -----
+    // ----- METHODS -----
     /**
      * Handles the mouse pressed event.
      * <p>
@@ -89,11 +89,12 @@ public class CopyHandler implements EventHandler<MouseEvent> {
 			lastY = e.getY();
 		}
 	}
+
 	/**
 	 * Handles mouse release to register the copy operation in undo/redo system.
 	 * 
 	 * @param e the MouseEvent representing the mouse release
-	 * */
+	 */
 	private void mouseReleased (MouseEvent e)
 	{
 		if (copiedShape != null)

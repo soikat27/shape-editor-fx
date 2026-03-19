@@ -20,7 +20,6 @@ import shapes.Rect;
 public class RectHandler extends DrawHandler {
     
     // ----- CONSTRUCTORS -----
-
     /**
      * Constructs a {@code RectHandler} associated with the given {@link ShapeCanvas}.
      *
@@ -32,7 +31,6 @@ public class RectHandler extends DrawHandler {
 	}
 
     // ----- METHODS -----
-
     /**
      * Called when the user presses the mouse to start drawing a rectangle.
      * <p>

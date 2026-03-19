@@ -1,6 +1,7 @@
 package handlers;
 
 import editor.ShapeCanvas;
+import edits.DrawEdit;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -91,8 +92,9 @@ public class DrawHandler implements EventHandler<MouseEvent> {
 		if (shape != null)
 		{
 			canvas.addShape(shape);
+			canvas.addEdit(new DrawEdit(canvas, shape));
 			canvas.setCurrShape(null);
-
+			
 			shape = null;
 		}
 	}
@@ -107,21 +109,20 @@ public class DrawHandler implements EventHandler<MouseEvent> {
 	public void handle (MouseEvent event)
 	{
 		String eventName = event.getEventType().getName();
-		System.out.println ("event name: " + eventName);
 
 		switch (eventName)
 		{
-		case "MOUSE_PRESSED":
-			mousePressed(event);
-			break;
-		case "MOUSE_DRAGGED":
-			mouseDragged(event);
-			break;
-		case "MOUSE_RELEASED":
-			mouseReleased(event);
-			break;
-		default:
-			break;
+			case "MOUSE_PRESSED":
+				mousePressed(event);
+				break;
+			case "MOUSE_DRAGGED":
+				mouseDragged(event);
+				break;
+			case "MOUSE_RELEASED":
+				mouseReleased(event);
+				break;
+			default:
+				break;
 		}
 	}
 }

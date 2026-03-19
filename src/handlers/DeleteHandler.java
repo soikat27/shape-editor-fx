@@ -18,11 +18,13 @@ import shapes.MyShape;
  */
 public class DeleteHandler implements EventHandler<MouseEvent> {
     
-    /** The ShapeCanvas on which shapes are drawn and deleted */
+	// ----- FIELDS -----
+    /**
+     * The ShapeCanvas on which shapes are drawn and deleted 
+	 */
     private ShapeCanvas canvas;
 
     // ----- CONSTRUCTORS -----
-
     /**
      * Constructs a DeleteHandler with the specified ShapeCanvas.
      *
@@ -33,8 +35,7 @@ public class DeleteHandler implements EventHandler<MouseEvent> {
 		canvas = sc;
 	}
 
-    // ----- LOGICAL METHODS -----
-
+    // ----- METHODS -----
     /**
      * Handles mouse click events to delete the shape closest to the click location and record the deletion in undo stack of the canvas.
      *

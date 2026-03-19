@@ -22,13 +22,12 @@ public class MoveHandler implements EventHandler<MouseEvent> {
     private ShapeCanvas canvas;
 	/** The currently selected shape closest to the mouse */
 	private MyShape     selectedShape;
-	/** Initial mouse press coordinates */
+	/** Initial mouse press coordinates – before (move) operation */
 	private double startX, startY;
-	/** Initial mouse press coordinates */
+	/** Final mouse press coordinates – after (move) operation */
 	private double lastX, lastY;
 
     // ----- CONSTRUCTORS -----
-
 	/**
      * Constructs a MoveHandler associated with the given canvas.
      *
@@ -39,8 +38,7 @@ public class MoveHandler implements EventHandler<MouseEvent> {
 		canvas = sc;
 	}
 
-    // ----- LOGICAL METHODS -----
-
+    // ----- METHODS -----
 	/**
      * Handles mouse press events to select the shape closest to the mouse.
      *

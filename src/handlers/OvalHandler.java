@@ -20,7 +20,6 @@ import shapes.Oval;
 public class OvalHandler extends DrawHandler {
     
     // ----- CONSTRUCTORS -----
-
     /**
      * Constructs an {@code OvalHandler} associated with the given {@link ShapeCanvas}.
      *
@@ -32,7 +31,6 @@ public class OvalHandler extends DrawHandler {
 	}
 
     // ----- METHODS -----
-
     /**
      * Called when the user presses the mouse to start drawing an oval.
      * <p>
