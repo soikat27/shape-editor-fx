@@ -45,6 +45,16 @@ public class ShapeGroup extends MyShape {
 
     // ----- METHODS -----
     /**
+     * Returns the list of member shapes contained within this ShapeGroup.
+     *
+     * @return the ArrayList of MyShape objects that are members of this group
+     */
+    public ArrayList<MyShape> getMembers ()
+    {
+        return group;
+    }
+    
+    /**
      * Sets the list of shapes in this group.
      * 
      * @param group the list of {@link MyShape} objects to set

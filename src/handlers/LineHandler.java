@@ -20,7 +20,6 @@ import shapes.Line;
 public class LineHandler extends DrawHandler{
     
     // ----- CONSTRUCTORS -----
-
     /**
      * Constructs a {@code LineHandler} associated with the given {@link ShapeCanvas}.
      *
@@ -32,7 +31,6 @@ public class LineHandler extends DrawHandler{
 	}
 
     // ----- METHODS -----
-
     /**
      * Called when the user presses the mouse to start drawing a line.
      * <p>
