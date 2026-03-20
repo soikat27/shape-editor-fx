@@ -102,10 +102,11 @@ public class GroupHandler implements EventHandler<MouseEvent> {
 		{
 			canvas.addShape(group);
             canvas.addEdit(new GroupEdit (canvas, group));
-			canvas.setCurrShape(null);
 		}
 		
+        canvas.setCurrShape(null);
 		group = null;
+        canvas.paint();
 	}
 
     /**
