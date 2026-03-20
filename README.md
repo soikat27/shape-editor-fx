@@ -98,6 +98,8 @@ java --module-path "/path/to/javafx/lib" --add-modules javafx.controls,javafx.fx
   - **Load / Save** (text format)
   - **Load Binary Format / Save Binary Format** (serialized objects)
 
+![App Demo](assets/shape-editor-demo.gif)
+
 #### Usage
 
 * Select a drawing tool (**Line**, **Rectangle**, or **Oval**) and drag on the canvas
