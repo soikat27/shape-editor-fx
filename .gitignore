@@ -27,3 +27,7 @@ replay_pid*
 
 .vscode/
 lib/
+.classpath
+.project
+.settings/
+bin/

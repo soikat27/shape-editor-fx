@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import editor.ShapeCanvas;
+import edits.GroupEdit;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import shapes.MyShape;
@@ -100,6 +101,7 @@ public class GroupHandler implements EventHandler<MouseEvent> {
 		if (!group.isEmpty())
 		{
 			canvas.addShape(group);
+            canvas.addEdit(new GroupEdit (canvas, group));
 			canvas.setCurrShape(null);
 		}
 		
