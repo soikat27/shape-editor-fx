@@ -20,19 +20,70 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import shapes.*;
 
+/**
+ * The ShapeCanvas class provides a custom drawing surface for creating,
+ * rendering, and managing shapes in the "ShapeEditor", a JavaFX application.
+ * <p>
+ * It extends {@link javafx.scene.canvas.Canvas} and maintains an internal
+ * collection of {@link shapes.MyShape} objects, which are manually rendered
+ * using a {@link javafx.scene.canvas.GraphicsContext}.
+ *<p>
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Draw and display shapes (lines, rectangles, ovals, and groups)</li>
+ *     <li>Interactive editing via interchangeable mouse event handlers</li>
+ *     <li>Undo/redo support using a command-based edit system</li>
+ *     <li>Shape selection (e.g., closest shape detection)</li>
+ *     <li>Persistence via text and binary file formats</li>
+ * </ul>
+ *
+ * <h2>Design Notes:</h2>
+ * <ul>
+ *     <li><b>Rendering:</b> The canvas is not reactive; all updates require explicit repainting via {@link #paint()}.</li>
+ *     <li><b>Edit System:</b> Uses stacks of {@link edits.Edit} objects to support undo/redo operations.</li>
+ *     <li><b>Event Handling:</b> Mouse interactions are dynamically assigned through handler replacement.</li>
+ *     <li><b>Composite Shapes:</b> Supports grouped shapes using {@link shapes.ShapeGroup}.</li>
+ * </ul>
+ *
+ * @author Soikat
+ */
 public class ShapeCanvas extends Canvas {
     
+	// ----- FIELDS -----
+	/** The width & height of the canvas */
     private double             width, height;
+	/** The GraphicsContext used for rendering shapes onto the canvas */
 	private GraphicsContext    gc;
+	/** The list of shapes currently displayed on the canvas */
 	private ArrayList<MyShape> shapes;
+	/** The shape currently being drawn or edited by the user */
 	private MyShape            currShape;
+	/** The current drawing color applied to new shapes */
 	private Color              currColor;
+	/** Indicates whether newly created shapes should be filled */
 	private boolean            filled;
 
+	/** Stack storing edit operations for undo functionality */
 	private Stack<Edit> stackUndo;
+	/** Stack storing undone edit operations for redo functionality */
 	private Stack<Edit> stackRedo;
 
     // ----- CONSTRUCTORS -----
+	/**
+	 * Constructs a ShapeCanvas with the specified dimensions.
+	 * 
+	 * It initializes the drawing surface, graphics context, shape storage,
+	 * default drawing properties, and undo/redo stacks.
+	 * 
+	 * <ul>
+	 *     <li>Default color is set to black</li>
+	 *     <li>Shapes are unfilled by default</li>
+	 *     <li>Undo/redo stacks are initialized as empty</li>
+	 * </ul>
+	 *
+	 * @param w The width of the canvas
+	 * @param h The height of the canvas
+	 */
     public ShapeCanvas (double w, double h)
 	{
 		super(w, h);
@@ -49,37 +100,74 @@ public class ShapeCanvas extends Canvas {
 	}
 
     // ----- GETTER & SETTER METHODS -----
+	/**
+	 * Returns the list of shapes currently on the canvas.
+	 *
+	 * @return an ArrayList of MyShape objects representing all shapes on the canvas
+	 */
 	public ArrayList<MyShape> getShapes ()
 	{
 		return shapes;
 	}
 	
+	/**
+	 * Returns the shape currently being drawn or edited.
+	 *
+	 * @return the current MyShape, or null if no shape is active
+	 */
     public MyShape getCurrShape ()
 	{
 		return currShape;
 	}
 
+	/**
+	 * Returns the current drawing color applied to new shapes.
+	 *
+	 * @return the current Color
+	 */
     public Color getCurrColor ()
 	{
 		return currColor;
 	}
 
+	/**
+	 * Returns whether newly created shapes are filled.
+	 *
+	 * @return true if shapes are filled, false otherwise
+	 */
     public boolean getCurrFilled ()
 	{
 		return filled;
 	}
 
+	/**
+	 * Sets the current drawing color for new shapes.
+	 *
+	 * @param c the Color to set as the current drawing color
+	 */
     public void setCurrColor (Color c)
 	{
 		currColor = c;
 	}
 
+	/**
+	 * Sets whether newly created shapes should be filled.
+	 *
+	 * @param filled true to fill shapes, false for outline only
+	 */
     public void setCurrFilled (boolean filled)
 	{
 		this.filled = filled;
 	}
 
     // ----- OTHER BEHAVIORAL METHODS -----
+	/**
+	 * Repaints the entire canvas by clearing the drawing area and rendering
+	 * all shapes currently stored in the canvas.
+	 * 
+	 * If a shape is actively being created or edited, it is drawn on top
+	 * of existing shapes.
+	 */
     public void paint ()
 	{
 		// clear canvas
@@ -87,23 +175,30 @@ public class ShapeCanvas extends Canvas {
 
 		// draw all strokes
 		for (MyShape shape : shapes)
-		{
 			shape.draw(gc);
-		}
 
 		// draw current shape if exits
 		if (currShape != null)
-		{
 			currShape.draw(gc);
-		}
 	}
 
+	/**
+	 * Adds a shape to the canvas and immediately refreshes the display.
+	 *
+	 * @param s the shape to be added
+	 */
     public void addShape (MyShape s)
 	{
 		shapes.add(s);
 		paint();
 	}
 
+	/**
+	 * Sets the current active shape being drawn or edited.
+	 * If the shape is not null, it inherits the current color and fill settings.
+	 *
+	 * @param s the shape to set as the current shape
+	 */
     public void setCurrShape (MyShape s)
 	{
 		currShape = s;
@@ -115,6 +210,10 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Clears all shapes from the canvas and resets undo/redo history.
+	 * The canvas is then repainted to reflect the empty state.
+	 */
     public void clear ()
 	{
 		shapes.clear();
@@ -123,19 +222,34 @@ public class ShapeCanvas extends Canvas {
 		paint();
 	}
 
+	/**
+	 * Replaces all mouse event handlers on the canvas with a single shared listener.
+	 * 
+	 * This allows dynamic switching between different interaction modes
+	 * (e.g., drawing, selecting, editing).
+	 *
+	 * @param listener the event handler for all mouse events
+	 */
     public void replaceMouseHandler(EventHandler<MouseEvent> listener) 
 	{
 		setOnMousePressed(listener);
 		setOnMouseDragged(listener);
 		setOnMouseReleased(listener);
+		setOnMouseClicked(listener);
 	}
 
+	/**
+	 * Finds the shape whose center is closest to the given (x, y) coordinate.
+	 * This is used for selection and interaction operations.
+	 *
+	 * @param x the x-coordinate of the reference point
+	 * @param y the y-coordinate of the reference point
+	 * @return the closest shape, or null if no shapes exist
+	 */
 	public MyShape closestShape (double x, double y)
 	{
 		if (shapes.isEmpty())
-		{
 			return null;
-		}
 
 		MyShape closestShape   = shapes.get(0);
 		double closestDistance = closestShape.getCenter().distance(x, y);
@@ -155,16 +269,31 @@ public class ShapeCanvas extends Canvas {
 		return closestShape;
 	}
 
+	/**
+	 * Removes a shape from the canvas without repainting.
+	 *
+	 * @param s the shape to be removed
+	 */
 	public void deleteShape (MyShape s)
 	{
 		shapes.remove(s);
 	}
 
+	/**
+	 * Pushes a new edit operation onto the undo stack.
+	 *
+	 * @param edit the edit operation to store
+	 */
 	public void addEdit (Edit edit)
 	{
 		stackUndo.push(edit);
 	}
 
+	/**
+	 * Undoes the most recent edit operation, if available.
+	 * 
+	 * The undone operation is moved to the redo stack.
+	 */
 	public void undo ()
 	{
 		if (!stackUndo.empty())
@@ -175,6 +304,11 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Redoes the most recently undone operation, if available.
+	 * 
+	 * The redone operation is moved back to the undo stack.
+	 */
 	public void redo ()
 	{
 		if (!stackRedo.empty())
@@ -185,6 +319,15 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Loads a single (non-group) shape from a text file representation.
+	 * The method reconstructs a shape (Line, Rect, or Oval) using raw
+	 * coordinate and styling data, then applies fill and color attributes.
+	 *
+	 * @param reader the Scanner used to read serialized shape data
+	 * @param shapeType the type of shape being loaded (e.g., "Line", "Rect", "Oval")
+	 * @return a fully constructed MyShape instance
+	 */
 	private MyShape loadSingletonText (Scanner reader, String shapeType)
 	{
 		double x1 = reader.nextDouble();
@@ -198,28 +341,30 @@ public class ShapeCanvas extends Canvas {
 
 		MyShape shape;
 		if (shapeType.equalsIgnoreCase("Line"))
-		{
 			shape = new Line (x1, y1, x2, y2);
 
-		}
 		else if (shapeType.equalsIgnoreCase("Rect"))
-		{
 			shape = new Rect (x1, y1, x2, y2);
-		}
+
 		else
-		{
 			shape = new Oval (x1, y1, x2, y2);
-		}
 
 		if (isFilled.equalsIgnoreCase("true"))
-		{
 			shape.setFilled(true);
-		}
 
 		shape.setColor(Color.color(r, g, b));
 		return shape;
 	}
 
+	/**
+	 * Recursively loads a ShapeGroup from a text file.
+	 * A ShapeGroup may contain nested groups or individual shapes.
+	 * Each member is reconstructed and added to the group structure,
+	 * preserving hierarchical composition.
+	 *
+	 * @param reader the Scanner used to read serialized group data
+	 * @return a fully constructed ShapeGroup as a MyShape
+	 */
 	private MyShape loadGroupText (Scanner reader)
 	{
 		int nShapes = reader.nextInt();
@@ -236,24 +381,27 @@ public class ShapeCanvas extends Canvas {
 		for (int i = 0; i < nShapes; i++)
 		{
 			String curShapeType = reader.next();
-			MyShape curshape;
+			MyShape curShape;
 
 			if (curShapeType.equalsIgnoreCase("ShapeGroup"))
-			{
-				curshape = loadGroupText (reader);
-			}
+				curShape = loadGroupText (reader);
 
 			else
-			{
-				curshape = loadSingletonText (reader, curShapeType);
-			}
+				curShape = loadSingletonText (reader, curShapeType);
 
-			shapeGroup.addMember(curshape);
+			shapeGroup.addMember(curShape);
 		}
 
 		return shapeGroup;
 	}
 
+	/**
+	 * Saves all shapes currently on the canvas to a human-readable text file.
+	 * Each shape is written using its {@code toString()} representation,
+	 * preceded by the total number of shapes in the file.
+	 *
+	 * @param fileObj the file to which shape data will be written
+	 */
 	public void toTextFile (File fileObj)
 	{
 		try
@@ -262,9 +410,7 @@ public class ShapeCanvas extends Canvas {
 			writer.println(shapes.size());
 			
 			for (MyShape shape : shapes)
-			{
 				writer.println(shape.toString());
-			}
 			
 			writer.close();
 		}
@@ -276,6 +422,13 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Loads shapes from a text file and replaces the current canvas content.
+	 * It supports both singleton shapes and nested ShapeGroups. Existing canvas
+	 * state is cleared before loading to ensure consistency.
+	 *
+	 * @param fileObj the file to read shape data from
+	 */
 	public void fromTextFile (File fileObj)
 	{
 		try
@@ -292,14 +445,10 @@ public class ShapeCanvas extends Canvas {
 					MyShape curShape;
 
 					if (curType.equalsIgnoreCase("ShapeGroup"))
-					{
 						curShape = loadGroupText (reader);
-					}
 
 					else
-					{
 						curShape = loadSingletonText (reader, curType);
-					}
 
 					shapes.add(curShape);
 				}
@@ -316,6 +465,13 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Serializes and saves all shapes on the canvas to a binary file.
+	 * Uses Java object serialization to store shape objects efficiently.
+	 * Includes the number of shapes followed by each serialized object.
+	 *
+	 * @param fileObj the file to which binary data will be written
+	 */
 	public void toBinaryFile (File fileObj)
 	{
 		try
@@ -325,9 +481,7 @@ public class ShapeCanvas extends Canvas {
 			
 			writer.writeInt(shapes.size());
 			for (MyShape shape : shapes)
-			{
 				writer.writeObject(shape);
-			}
 			
 			writer.close();
 			fOut.close();
@@ -340,6 +494,14 @@ public class ShapeCanvas extends Canvas {
 		}
 	}
 
+	/**
+	 * Loads shapes from a binary file using Java object deserialization.
+	 * <p>
+	 * Clears existing canvas content before restoring saved shapes.
+	 * Restores the full object graph of all shapes including groups.
+	 *
+	 * @param fileObj the file to read binary shape data from
+	 */
 	public void fromBinaryFile (File fileObj)
 	{
 		try
@@ -352,8 +514,8 @@ public class ShapeCanvas extends Canvas {
 			
 			for (int i = 0; i < nShapes; i++)
 			{
-				MyShape s = (MyShape) reader.readObject();
-				shapes.add(s);
+				MyShape shape = (MyShape) reader.readObject();
+				shapes.add(shape);
 			}
 			
 			fIn.close();
