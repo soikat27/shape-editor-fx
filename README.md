@@ -39,7 +39,7 @@ and
 javac -version  # checks the Java compiler
 ```
 
-#### JavaFX Download Guide (optional if using bundled `lib/`):
+#### JavaFX Download Guide:
 
 1. Visit the official JavaFX website: [https://gluonhq.com/products/javafx](https://gluonhq.com/products/javafx)
 
